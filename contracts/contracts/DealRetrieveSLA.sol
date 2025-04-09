@@ -39,6 +39,7 @@ contract DealRetrieveSLA is DealInfo {
         bytes providerAddress;
         uint64 providerActorId;
         string reason;
+        address raiser;  // Added field to track original raiser
     }
     
     // Struct to store provider statistics
@@ -61,6 +62,9 @@ contract DealRetrieveSLA is DealInfo {
     
     // Mapping to track disputes by provider
     mapping(bytes => uint256[]) public providerDisputes;
+
+    // Mapping to track if a dispute has been processed already
+    mapping(uint256 => bool) public processedDisputes;
     
     // Events
     event StorageProviderRegistered(uint64 actorId, bytes providerAddress, uint256 stakedAmount);
@@ -161,7 +165,8 @@ contract DealRetrieveSLA is DealInfo {
             dealLabel: dealLabel,
             providerAddress: providerAddress,
             providerActorId: providerActorId,
-            reason: reason
+            reason: reason,
+            raiser: msg.sender  // Store the original raiser
         });
         
         // Add dispute to provider's disputes
@@ -188,15 +193,25 @@ contract DealRetrieveSLA is DealInfo {
             status == RetrieveChecker.DisputeStatus.Rejected,
             "Dispute not resolved"
         );
+
+        // Check if dispute has already been processed
+        require(!processedDisputes[baseDisputeId], "Dispute already processed");
         
         DealDispute storage dispute = dealDisputes[baseDisputeId];
         require(dispute.baseDisputeId == baseDisputeId, "Enhanced dispute not found");
+        
+        // Get the base dispute details to verify the raiser
+        RetrieveChecker.Dispute memory baseDispute = retrieveChecker.getDisputeDetails(baseDisputeId);
+        require(baseDispute.raiser == address(this), "Invalid dispute raiser");
         
         bytes memory providerAddress = dispute.providerAddress;
         uint256 penaltyAmount = 0;
         uint256 raiserReward = 0;
         uint256 clientReward = 0;
-        
+
+        // Mark dispute as processed
+        processedDisputes[baseDisputeId] = true;
+
         // If the dispute failed (retrieval failed), slash the stake
         if (status == RetrieveChecker.DisputeStatus.Failed) {
             penaltyAmount = storageProviderStakes[providerAddress];
@@ -205,15 +220,13 @@ contract DealRetrieveSLA is DealInfo {
             // Reset provider's stake to 0
             storageProviderStakes[providerAddress] = 0;
             
-            // Get the dispute details to find the raiser
-            RetrieveChecker.Dispute memory baseDispute = retrieveChecker.getDisputeDetails(baseDisputeId);
-            
             // Calculate rewards - 5% to raiser, rest to client
             raiserReward = (penaltyAmount * disputeRaiserRewardPercentage) / 100;
             clientReward = penaltyAmount - raiserReward;
             
-            // Transfer reward to raiser
-            payable(baseDispute.raiser).transfer(raiserReward);
+            // Transfer reward to the original raiser stored in DealDispute
+            (bool success, ) = payable(dispute.raiser).call{value: raiserReward}("");
+            require(success, "Transfer to raiser failed");
             
             // Get deal client directly using inherited DealInfo methods and forward remaining funds
             if (clientReward > 0) {
@@ -223,10 +236,9 @@ contract DealRetrieveSLA is DealInfo {
                 // Client address must be converted to filecoin address bytes
                 CommonTypes.FilAddress memory clientAddr = FilAddresses.fromActorID(clientActorId);
                 
-                // Use the forward method with the correct syntax - passing bytes as calldata
-                // and using the value modifier for the transfer amount
-                clientAddr.send(clientReward);
-
+                // Use the forward method with the correct syntax
+                int256 errCode = clientAddr.send(clientReward);
+                require(errCode == 0, "Transfer to client failed");
             }
         }
         

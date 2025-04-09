@@ -1,17 +1,10 @@
 const hre = require("hardhat");
 const { saveDeploymentInfo } = require("./utils/deployment");
 
-async function main() {
+async function deployRetrieveChecker(hre, deployer) {
   console.log("Deploying RetrieveChecker contract...");
-
-  // Get the network name and deployer
-  const networkName = hre.network.name;
-  const [deployer] = await hre.ethers.getSigners();
-  console.log(`Network: ${networkName}`);
-  console.log(`Deploying from account: ${deployer.address}`);
-
-  // Deploy the RetrieveChecker contract
   const disputeFee = hre.ethers.parseEther("0.01");
+  
   const RetrieveChecker = await hre.ethers.getContractFactory("RetrieveChecker");
   const retrieveChecker = await RetrieveChecker.deploy(
     deployer.address,
@@ -20,12 +13,22 @@ async function main() {
 
   await retrieveChecker.waitForDeployment();
   const retrieveCheckerAddress = await retrieveChecker.getAddress();
-  console.log(`RetrieveChecker deployed to: ${retrieveCheckerAddress}`);
+  console.log(`New RetrieveChecker deployed to: ${retrieveCheckerAddress}`);
 
-  // Save only the contract address
-  await saveDeploymentInfo(networkName, {
+  // Save the new RetrieveChecker address
+  await saveDeploymentInfo(hre.network.name, {
     RetrieveChecker: retrieveCheckerAddress
   });
+
+  return retrieveCheckerAddress;
+}
+
+async function main() {
+  const [deployer] = await hre.ethers.getSigners();
+  console.log(`Network: ${hre.network.name}`);
+  console.log(`Deploying from account: ${deployer.address}`);
+
+  const retrieveCheckerAddress = await deployRetrieveChecker(hre, deployer);
   
   console.log("Deployment completed successfully!");
   return retrieveCheckerAddress;
@@ -38,3 +41,5 @@ main()
     console.error(error);
     process.exit(1);
   });
+
+module.exports = { deployRetrieveChecker };

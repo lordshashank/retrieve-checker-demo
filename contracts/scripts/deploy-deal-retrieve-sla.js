@@ -1,27 +1,6 @@
 const hre = require("hardhat");
 const { saveDeploymentInfo, getLatestDeployment } = require("./utils/deployment");
-
-async function deployRetrieveChecker(deployer) {
-  console.log("Deploying new RetrieveChecker contract...");
-  const disputeFee = hre.ethers.parseEther("0.01");
-  
-  const RetrieveChecker = await hre.ethers.getContractFactory("RetrieveChecker");
-  const retrieveChecker = await RetrieveChecker.deploy(
-    deployer.address,
-    disputeFee
-  );
-
-  await retrieveChecker.waitForDeployment();
-  const retrieveCheckerAddress = await retrieveChecker.getAddress();
-  console.log(`New RetrieveChecker deployed to: ${retrieveCheckerAddress}`);
-
-  // Save the new RetrieveChecker address
-  await saveDeploymentInfo(hre.network.name, {
-    RetrieveChecker: retrieveCheckerAddress
-  });
-
-  return retrieveCheckerAddress;
-}
+// const { deployRetrieveChecker } = require("./deploy-retrieve-checker");
 
 async function main() {
   console.log("Deploying DealRetrieveSLA contract...");
@@ -42,7 +21,7 @@ async function main() {
     
     if (!retrieveCheckerAddress) {
       console.log("No existing RetrieveChecker found. Will deploy a new one...");
-      retrieveCheckerAddress = await deployRetrieveChecker(deployer);
+    //   retrieveCheckerAddress = await deployRetrieveChecker(hre, deployer);
     } else {
       console.log(`Using previously deployed RetrieveChecker at: ${retrieveCheckerAddress}`);
     }
