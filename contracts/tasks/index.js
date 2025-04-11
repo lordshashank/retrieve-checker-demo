@@ -6,6 +6,8 @@ require("./stake-management");
 require("./dispute-stats");
 require("./get-dispute-info");
 require("./resolve-checker-dispute");
+require("./get-disputes-by-status");
+require("./list-registered-sps");
 
 // Export empty object as module
 module.exports = {};

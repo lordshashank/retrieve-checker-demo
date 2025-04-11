@@ -1,6 +1,5 @@
 const hre = require("hardhat");
 const { saveDeploymentInfo, getLatestDeployment } = require("./utils/deployment");
-// const { deployRetrieveChecker } = require("./deploy-retrieve-checker");
 
 async function main() {
   console.log("Deploying DealRetrieveSLA contract...");
@@ -10,7 +9,7 @@ async function main() {
   console.log(`Network: ${networkName}`);
   console.log(`Deploying from account: ${deployer.address}`);
   
-  // Get or deploy RetrieveChecker
+  // Get RetrieveChecker address
   let retrieveCheckerAddress = process.argv[2];
   
   if (!retrieveCheckerAddress) {
@@ -20,11 +19,9 @@ async function main() {
     retrieveCheckerAddress = await getLatestDeployment(networkName, "RetrieveChecker");
     
     if (!retrieveCheckerAddress) {
-      console.log("No existing RetrieveChecker found. Will deploy a new one...");
-    //   retrieveCheckerAddress = await deployRetrieveChecker(hre, deployer);
-    } else {
-      console.log(`Using previously deployed RetrieveChecker at: ${retrieveCheckerAddress}`);
+      throw new Error("No RetrieveChecker address found. Please deploy RetrieveChecker first or provide its address as an argument.");
     }
+    console.log(`Using previously deployed RetrieveChecker at: ${retrieveCheckerAddress}`);
   } else {
     console.log(`Using provided RetrieveChecker address: ${retrieveCheckerAddress}`);
   }

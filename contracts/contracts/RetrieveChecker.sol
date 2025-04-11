@@ -29,6 +29,7 @@ contract RetrieveChecker {
         uint256 disputeId;
         address raiser;
         bytes cid;
+        uint64 spActorId;
         DisputeStatus status;
         uint256 timestamp;
         uint256 resolutionTimestamp;
@@ -44,7 +45,7 @@ contract RetrieveChecker {
     uint256 public currentDisputeId;
     
     // Events
-    event DisputeRaised(uint256 disputeId, address raiser, bytes cid);
+    event DisputeRaised(uint256 disputeId, address raiser, bytes cid, uint64 spActorId);
     event DisputeResolved(uint256 disputeId, DisputeStatus status);
     event RetrieveCheckerChanged(address newCheckerAddress);
     
@@ -76,9 +77,10 @@ contract RetrieveChecker {
     /**
      * @dev Raise a dispute for a content retrieval failure
      * @param cid The CID of the content that failed to retrieve
+     * @param spActorId The Storage Provider's actor ID
      * @return The ID of the created dispute
      */
-    function raiseDispute(bytes calldata cid) external payable returns (uint256) {
+    function raiseDispute(bytes calldata cid, uint64 spActorId) external payable returns (uint256) {
         // Check if the sender still has free disputes available
         bool isFree = disputesByAddress[msg.sender] < freeDisputeLimit;
         
@@ -93,6 +95,7 @@ contract RetrieveChecker {
             disputeId: disputeId,
             raiser: msg.sender,
             cid: cid,
+            spActorId: spActorId,
             status: DisputeStatus.Pending,
             timestamp: block.timestamp,
             resolutionTimestamp: 0
@@ -102,7 +105,7 @@ contract RetrieveChecker {
         disputesByAddress[msg.sender]++;
         
         // Emit event
-        emit DisputeRaised(disputeId, msg.sender, cid);
+        emit DisputeRaised(disputeId, msg.sender, cid, spActorId);
         
         return disputeId;
     }
@@ -149,6 +152,31 @@ contract RetrieveChecker {
     function getDisputeStatus(uint256 disputeId) external view returns (DisputeStatus) {
         require(disputeId < currentDisputeId, "Invalid dispute ID");
         return disputes[disputeId].status;
+    }
+    
+    /**
+     * @dev Get all disputes with a specific status
+     * @param status The status to filter disputes by
+     * @return Array of dispute IDs matching the status
+     */
+    function getDisputesByStatus(DisputeStatus status) external view returns (uint256[] memory) {
+        uint256[] memory matchingDisputes = new uint256[](currentDisputeId);
+        uint256 count = 0;
+        
+        for (uint256 i = 0; i < currentDisputeId; i++) {
+            if (disputes[i].status == status) {
+                matchingDisputes[count] = i;
+                count++;
+            }
+        }
+        
+        // Create properly sized array with just the matching disputes
+        uint256[] memory result = new uint256[](count);
+        for (uint256 i = 0; i < count; i++) {
+            result[i] = matchingDisputes[i];
+        }
+        
+        return result;
     }
     
     /**

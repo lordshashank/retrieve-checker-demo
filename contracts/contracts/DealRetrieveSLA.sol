@@ -53,6 +53,9 @@ contract DealRetrieveSLA is DealInfo {
     
     // Mapping to track registered storage providers
     mapping(bytes => bool) public registeredStorageProviders;
+
+    // Array to track all registered SP actor IDs
+    uint64[] public registeredSPActorIds;
     
     // Mapping to track staked amounts by storage providers
     mapping(bytes => uint256) public storageProviderStakes;
@@ -108,6 +111,8 @@ contract DealRetrieveSLA is DealInfo {
         
         registeredStorageProviders[providerAddress] = true;
         storageProviderStakes[providerAddress] = msg.value;
+
+        registeredSPActorIds.push(actorId);
         
         emit StorageProviderRegistered(actorId, providerAddress, msg.value);
     }
@@ -127,6 +132,15 @@ contract DealRetrieveSLA is DealInfo {
         if (stakedAmount > 0) {
             storageProviderStakes[providerAddress] = 0;
             payable(owner).transfer(stakedAmount);
+        }
+        // Remove actor ID from the array
+        for (uint256 i = 0; i < registeredSPActorIds.length; i++) {
+            if (registeredSPActorIds[i] == actorId) {
+                // Replace with the last element and pop
+                registeredSPActorIds[i] = registeredSPActorIds[registeredSPActorIds.length - 1];
+                registeredSPActorIds.pop();
+                break;
+            }
         }
         
         registeredStorageProviders[providerAddress] = false;
@@ -156,7 +170,7 @@ contract DealRetrieveSLA is DealInfo {
         
         // Call the base RetrieveChecker contract to raise the dispute
         // Forward any value sent with this transaction to the retrieveChecker
-        uint256 baseDisputeId = retrieveChecker.raiseDispute{value: msg.value}(dealLabel.data);
+        uint256 baseDisputeId = retrieveChecker.raiseDispute{value: msg.value}(dealLabel.data, providerActorId);
         
         // Store enhanced dispute information
         dealDisputes[baseDisputeId] = DealDispute({
@@ -372,6 +386,14 @@ contract DealRetrieveSLA is DealInfo {
         
         return stats;
     }
+
+    /**
+     * @dev Get all registered storage providers
+     * @return Array of registered storage provider addresses
+     */
+    function getRegisteredSpActorIds() external view returns (uint64[] memory) {
+        return registeredSPActorIds;
+    }
     
     /**
      * @dev Get all failed disputes for a provider
@@ -491,5 +513,35 @@ contract DealRetrieveSLA is DealInfo {
         // In a real implementation, you'd need to track all registered providers separately
         bytes[] memory providers = new bytes[](0);
         return providers;
+    }
+
+    /**
+     * @dev Get all disputes raised by a specific address
+     * @param raiser Address of the dispute raiser
+     * @return Array of disputes raised by the specified address
+     */
+    function getDisputesByRaiser(address raiser) external view returns (DealDispute[] memory) {
+        // Count disputes by this raiser first
+        uint256 count = 0;
+        for (uint256 i = 1; i <= retrieveChecker.currentDisputeId(); i++) {
+            // Only count if this is a valid dispute in our system and matches the raiser
+            if (dealDisputes[i].baseDisputeId == i && dealDisputes[i].raiser == raiser) {
+                count++;
+            }
+        }
+        
+        // Create array to hold results
+        DealDispute[] memory disputes = new DealDispute[](count);
+        
+        // Fill the array with matching dispute IDs
+        uint256 index = 0;
+        for (uint256 i = 1; i <= retrieveChecker.currentDisputeId(); i++) {
+            if (dealDisputes[i].baseDisputeId == i && dealDisputes[i].raiser == raiser) {
+                disputes[index] = dealDisputes[i];
+                index++;
+            }
+        }
+        
+        return disputes;
     }
 }
