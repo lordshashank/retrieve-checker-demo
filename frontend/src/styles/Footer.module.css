@@ -1,0 +1,108 @@
+.footer {
+  width: 100%;
+  background-color: rgba(41, 65, 171, 0.05);  /* Subtle blue background with transparency */
+  backdrop-filter: blur(8px);  /* Add a subtle blur effect */
+  color: #4a5568;  /* More subtle text color */
+  padding: 1rem 2rem;
+  margin-top: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  transition: all 0.3s;
+  border-top: 1px solid rgba(41, 65, 171, 0.1);  /* Subtle border */
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);  /* Subtle shadow */
+}
+
+.transparentFooter {
+    width: 100%;
+    background-color: transparent; 
+    backdrop-filter: blur(8px);  
+    color: #4a5568;  /* More subtle text color */
+    padding: 1rem 2rem;
+    margin-top: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    transition: all 0.3s;
+    border-top: 1px solid rgba(41, 65, 171, 0.1);  /* Subtle border */
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);  /* Subtle shadow */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.text {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b63b8;  /* Filecoin-inspired blue */
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.link:hover {
+  color: #2941ab;  /* Darker blue on hover */
+  transform: translateY(-1px);  /* Subtle lift effect */
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* For dark mode */
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background-color: rgba(41, 65, 171, 0.1);
+    color: #a0aec0;
+    border-top: 1px solid rgba(41, 65, 171, 0.2);
+  }
+
+  .transparentFooter {
+    background-color: transparent;
+    color: #a0aec0;
+    border-top: 1px solid rgba(41, 65, 171, 0.2);
+  }
+  
+  .link {
+    color: #6b82db;
+  }
+  
+  .link:hover {
+    color: #8ca0f4;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer {
+    padding: 1rem;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  
+}

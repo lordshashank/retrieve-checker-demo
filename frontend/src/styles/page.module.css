@@ -1,0 +1,87 @@
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100svh;
+  padding: 40px;
+  font-family: var(--font-geist-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  gap: 20px;
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.walletContainer {
+  margin-bottom: 20px;
+}
+
+.walletInfo {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.addressCard {
+  background: var(--gray-alpha-100);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid var(--gray-alpha-200);
+}
+
+.addressCard h2 {
+  margin-top: 0;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.addressCard p {
+  margin: 0;
+  font-family: var(--font-geist-mono);
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.connectPrompt {
+  padding: 20px;
+  text-align: center;
+}
+
+.connectPrompt h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+
+.connectPrompt p {
+  margin: 10px 0 0;
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 20px;
+  }
+}
