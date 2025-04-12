@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Home from "../pages/Home";
+import Home from "../components/Home";
 import Layout from "../components/Layout";
 
 export default function Page() {
