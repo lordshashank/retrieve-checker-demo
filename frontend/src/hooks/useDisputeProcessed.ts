@@ -16,7 +16,6 @@ export const useDisputeProcessed = (disputeId: bigint | undefined) => {
       enabled: !!disputeId,
     },
   });
-  console.log("Dispute processed data:", data);
   // data will be a boolean indicating if the dispute has been processed
   const isProcessed = data !== undefined ? Boolean(data) : false;
 

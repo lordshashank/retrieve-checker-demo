@@ -1,6 +1,5 @@
-import { useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { DealRetrieveSLA } from "../contracts/DealRetrieveSLA";
-import { useAccount } from "wagmi";
 
 export type DealDisputeData = {
   baseDisputeId: bigint;
@@ -17,7 +16,6 @@ export type DealDisputeData = {
 
 export const useUserChallenges = () => {
   const { address } = useAccount();
-  console.log("User address:", address);
   const { data, isLoading, error, refetch } = useReadContract({
     address: DealRetrieveSLA.address,
     abi: DealRetrieveSLA.abi,
@@ -27,7 +25,6 @@ export const useUserChallenges = () => {
       enabled: !!address,
     },
   });
-  console.log("User challenges data:", data);
   return {
     challenges: data as DealDisputeData[] | undefined,
     isLoading,

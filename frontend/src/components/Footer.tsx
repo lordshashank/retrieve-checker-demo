@@ -9,7 +9,6 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ isTransparent = false }) => {
-    console.log("Footer rendered with isTransparent:", isTransparent);
   return (
     <footer className={`${styles.footer} ${isTransparent ? styles.transparentFooter : ""}`}>
       <div className={styles.container}>

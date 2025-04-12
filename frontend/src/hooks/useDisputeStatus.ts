@@ -16,7 +16,6 @@ export const disputeStatusMap = {
 export type DisputeStatus = keyof typeof disputeStatusMap;
 
 export const useDisputeStatus = (disputeId: bigint | undefined) => {
-  console.log("Dispute ID:", disputeId);
   const { data, isLoading, error, refetch } = useReadContract({
     address: RetrieveChecker.address,
     abi: RetrieveChecker.abi,
@@ -26,7 +25,6 @@ export const useDisputeStatus = (disputeId: bigint | undefined) => {
       enabled: !!disputeId,
     },
   });
-  console.log("Dispute status data:", data);
   // Convert numeric status to string representation
   const statusCode = data !== undefined ? Number(data) as DisputeStatus : undefined;
   const statusText = statusCode !== undefined ? disputeStatusMap[statusCode] : undefined;

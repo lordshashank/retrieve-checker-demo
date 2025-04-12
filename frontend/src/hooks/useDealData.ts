@@ -47,7 +47,6 @@ export const useDealData = (dealId: string) => {
       enabled: !!dealId,
     },
   });
-  console.log(data);
   return {
     dealData: data as DealData | undefined,
     isLoading,
