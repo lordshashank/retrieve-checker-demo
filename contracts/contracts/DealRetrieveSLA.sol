@@ -523,7 +523,7 @@ contract DealRetrieveSLA is DealInfo {
     function getDisputesByRaiser(address raiser) external view returns (DealDispute[] memory) {
         // Count disputes by this raiser first
         uint256 count = 0;
-        for (uint256 i = 1; i <= retrieveChecker.currentDisputeId(); i++) {
+        for (uint256 i = 0; i <= retrieveChecker.currentDisputeId(); i++) {
             // Only count if this is a valid dispute in our system and matches the raiser
             if (dealDisputes[i].baseDisputeId == i && dealDisputes[i].raiser == raiser) {
                 count++;
@@ -535,7 +535,7 @@ contract DealRetrieveSLA is DealInfo {
         
         // Fill the array with matching dispute IDs
         uint256 index = 0;
-        for (uint256 i = 1; i <= retrieveChecker.currentDisputeId(); i++) {
+        for (uint256 i = 0; i <= retrieveChecker.currentDisputeId(); i++) {
             if (dealDisputes[i].baseDisputeId == i && dealDisputes[i].raiser == raiser) {
                 disputes[index] = dealDisputes[i];
                 index++;

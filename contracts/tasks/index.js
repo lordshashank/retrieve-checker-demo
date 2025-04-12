@@ -8,6 +8,8 @@ require("./get-dispute-info");
 require("./resolve-checker-dispute");
 require("./get-disputes-by-status");
 require("./list-registered-sps");
+require("./get-disputes-by-raiser");
+require("./get-dispute-status");
 
 // Export empty object as module
 module.exports = {};
