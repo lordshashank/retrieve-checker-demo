@@ -63,7 +63,7 @@ const Home = () => {
                 <div className={styles.cardGlow}></div>
                 <h2 className={styles.walletTitle}>Connect your wallet</h2>
                 <p className={styles.walletDescription}>
-                  Please connect your wallet to interact with the Filecoin network
+                  Please connect your wallet to interact with Dapp
                 </p>
               </div>
             )}
@@ -72,7 +72,7 @@ const Home = () => {
           <div className={styles.infoSection}>
             <p className={styles.description}>
               Explore and verify Filecoin storage deals. Check deal status, verify
-              commitments, and monitor storage provider performance.
+              retrievals, and monitor storage provider performance.
             </p>
             
             <div className={styles.features}>

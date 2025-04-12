@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ isTransparent = false }) => {
   return (
     <footer className={`${styles.footer} ${isTransparent ? styles.transparentFooter : ""}`}>
       <div className={styles.container}>
-        <p className={styles.text}>© 2025 Spark Checker - A Filecoin Retrieve Checker Demo</p>
+        <p className={styles.text}>© 2025 Deal Retrieve Checker: Retrieve Checker Subnet Demo</p>
         <div className={styles.links}>
           <Link 
             href="https://github.com/lordshashank/retrieve-checker-demo" 

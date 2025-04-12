@@ -14,7 +14,7 @@ export const useRaiseDispute = () => {
   const raiseDispute = async (disputeDealId: string, reason: string) => {
     setDealId(disputeDealId);
     writeContract({
-      address: process.env.NEXT_PUBLIC_DEAL_RETRIEVE_CONTRACT as `0x${string}`,
+      address: DealRetrieveSLA.address,
       abi: DealRetrieveSLA.abi,
       functionName: "raiseDispute",
       args: [BigInt(disputeDealId), reason],

@@ -43,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ defaultCollapsed = false }) => {
       }`}
     >
       <div className={styles.header}>
-        {!isCollapsed && <span className={styles.title}>Spark Checker</span>}
+        {!isCollapsed && <span className={styles.title}>Retrieve Checker</span>}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={styles.toggleButton}

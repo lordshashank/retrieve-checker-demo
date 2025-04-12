@@ -17,9 +17,9 @@ export type DealDisputeData = {
 
 export const useUserChallenges = () => {
   const { address } = useAccount();
-
+  console.log("User address:", address);
   const { data, isLoading, error, refetch } = useReadContract({
-    address: process.env.NEXT_PUBLIC_DEAL_RETRIEVE_CONTRACT as `0x${string}`,
+    address: DealRetrieveSLA.address,
     abi: DealRetrieveSLA.abi,
     functionName: "getDisputesByRaiser",
     args: address ? [address] : undefined,
@@ -27,7 +27,7 @@ export const useUserChallenges = () => {
       enabled: !!address,
     },
   });
-
+  console.log("User challenges data:", data);
   return {
     challenges: data as DealDisputeData[] | undefined,
     isLoading,

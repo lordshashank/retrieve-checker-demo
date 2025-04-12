@@ -8,7 +8,7 @@ import { DealRetrieveSLA } from "../contracts/DealRetrieveSLA";
  */
 export const useDisputeProcessed = (disputeId: bigint | undefined) => {
   const { data, isLoading, error, refetch } = useReadContract({
-    address: process.env.NEXT_PUBLIC_DEAL_RETRIEVE_CONTRACT as `0x${string}`,
+    address: DealRetrieveSLA.address,
     abi: DealRetrieveSLA.abi,
     functionName: "processedDisputes",
     args: disputeId ? [disputeId] : undefined,

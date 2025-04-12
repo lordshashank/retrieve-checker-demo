@@ -11,7 +11,7 @@ export type ProviderStats = {
 
 export const useProviderStats = (actorId: bigint | string | undefined) => {
   const { data, isLoading, error } = useReadContract({
-    address: process.env.NEXT_PUBLIC_DEAL_RETRIEVE_CONTRACT as `0x${string}`,
+    address: DealRetrieveSLA.address,
     abi: DealRetrieveSLA.abi,
     functionName: "getProviderStats",
     args: actorId ? [BigInt(actorId)] : undefined,

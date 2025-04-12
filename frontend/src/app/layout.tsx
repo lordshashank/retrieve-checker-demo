@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Deal Retrieve Checker",
   description: "Filecoin Deal Retrieval Checker Demo",
+  icons: ["/logo.png"],
 };
 
 export default function RootLayout({
